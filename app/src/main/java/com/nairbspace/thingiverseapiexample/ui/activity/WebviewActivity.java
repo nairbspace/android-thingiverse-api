@@ -42,7 +42,7 @@ public class WebviewActivity extends Activity {
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
 
-                String redirectUrlwithToken = REDIRECT_URL + "#access_token";
+                String redirectUrlwithToken = REDIRECT_URL + "/#access_token";
                 if (url.contains(redirectUrlwithToken)) {
                     // Thingiverse response success with access token. Now must validate.
                     String[] split = url.split("=");
