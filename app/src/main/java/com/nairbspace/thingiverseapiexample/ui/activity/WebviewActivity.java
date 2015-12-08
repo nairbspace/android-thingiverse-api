@@ -21,6 +21,9 @@ public class WebviewActivity extends Activity {
     /** ENTER Client ID from Thingiverse here */
     public static final String CLIENT_ID = "XXXXXXXXXXXXXXXXXXXXXXXX";
 
+    /** ENTER Redirect URL entered in Thingiverse App settings. MUST be valid URL! */
+    public static final String REDIRECT_URL = "http://xxxxxxxxxxx";
+
     private int mRetryCount;
     private String mAccessToken;
 
@@ -39,24 +42,28 @@ public class WebviewActivity extends Activity {
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
 
-                if (url.contains("https://thingiverse.com/#access_token")) {
+                String redirectUrlwithToken = REDIRECT_URL + "#access_token";
+                if (url.contains(redirectUrlwithToken)) {
+                    // Thingiverse response success with access token. Now must validate.
                     String[] split = url.split("=");
                     mAccessToken = split[1]; /** Should make access token persistent (ie. SharedPreferences) */
                     getTokenValidation();
                 } else if (url.contains("#error")) {
-                    finish();
+                    // Thingiverse error response
+                    finish(); // Kill activity
                 }
                 return false;
             }
         });
 
-        String loginURL = "https://www.thingiverse.com/login/oauth/authorize"
+        /** Use response_type=token. Not good practice to have Client Secret in app. */
+        String loginURL = ServiceGenerator.AUTHORIZE_URL + "/login/oauth/authorize"
             + "?client_id=" + CLIENT_ID
             + "&response_type=token";
         webView.loadUrl(loginURL);
     }
 
-    /** Should make this method a separate Service */
+    /** Should make this method a separate Service and have activity receive broadcast and update view */
     private void getTokenValidation() {
         ServiceGenerator.getLoginService().getTokenValidation(mAccessToken, new Callback<LoginValidation>() {
             @Override
@@ -70,7 +77,7 @@ public class WebviewActivity extends Activity {
 
                 } else {
                     // Audience doesn't match Client ID in app
-                    finish();
+                    finish(); // Kill activity
                 }
             }
 
@@ -81,7 +88,7 @@ public class WebviewActivity extends Activity {
                     mRetryCount++;
                 } else {
                     // Error validating token
-                    finish();
+                    finish(); // Kill activity
                 }
             }
         });

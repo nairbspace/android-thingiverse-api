@@ -54,31 +54,12 @@ public class UserInfoListActivity extends AppCompatActivity {
         getUserInfo();
     }
 
-    /** Should make this method a separate Service */
+    /** Should make this method a separate Service and have activity receive broadcast and update view */
     private void getUserInfo() {
         ServiceGenerator.getThingiverseService().getUserInfo(mAccessToken, new Callback<UserInfo>() {
             @Override
             public void success(UserInfo userInfo, Response response) {
                 mRetryCount = 0;
-
-//                // Get response body
-//                BufferedReader reader;
-//                StringBuilder sb = new StringBuilder();
-//                try {
-//                    reader = new BufferedReader(new InputStreamReader(response.getBody().in()));
-//
-//                    String line;
-//                    try {
-//                        while ((line = reader.readLine()) != null) {
-//                            sb.append(line);
-//                        }
-//                    } catch (IOException e) {
-//                        e.printStackTrace();
-//                    }
-//                } catch (IOException e) {
-//                    e.printStackTrace();
-//                }
-//                String result = sb.toString();
 
                 String responseText = "id: " + userInfo.getId() + "\n"
                         + "name: " + userInfo.getName() + "\n"
@@ -110,7 +91,7 @@ public class UserInfoListActivity extends AppCompatActivity {
                     mRetryCount++;
                 } else {
                     // Error getting user info
-                    finish();
+                    finish(); // Kill activity
                 }
             }
         });

@@ -10,7 +10,7 @@ import retrofit.client.OkClient;
 public class ServiceGenerator {
 
     public static final String AUTHORIZE_URL = "https://www.thingiverse.com";
-    public  static final String API_URL = "https://api.thingiverse.com";
+    public static final String API_URL = "https://api.thingiverse.com";
 
     /** Singleton RestAdapter for used for authorizing token */
     private static final RestAdapter AUTHORIZE_REST_ADAPTER = new RestAdapter.Builder()
